@@ -35,8 +35,8 @@ namespace SKYFALL64
         string difficulty = "MEDIUM";
         string gameState = "start";
 
-        int leftClick, rightClick, upClick = 0;
-        bool leftDown, rightDown, upDown;
+        int leftClick, rightClick, upClick, downClick = 0;
+        bool leftDown, rightDown, upDown, downDown;
 
         SolidBrush greenBrush = new SolidBrush(Color.Lime);
         SolidBrush blackBrush = new SolidBrush(Color.Black);
@@ -45,14 +45,24 @@ namespace SKYFALL64
         System.Windows.Media.MediaPlayer hit1 = new System.Windows.Media.MediaPlayer();
         System.Windows.Media.MediaPlayer hit2 = new System.Windows.Media.MediaPlayer();
 
+        //labyrinth variables
+        string labyrinthKey = "";
+
+        Rectangle labyrinthPlayer = new Rectangle();
+        Rectangle labyrinthObjectiveBack = new Rectangle();
+        Rectangle labyrinthObjectiveFront = new Rectangle();
+        List<int> labyrinthTiles = new List<int>();
+        int labyrinthTilesSize = 0;
+        int grid = 0;
+        string successfulLabyrinth = "false";
+        List<int> labyrinthBot = new List<int>();
+
+        ////labyrinth test visualized pt. 1
+        //List<Rectangle> labyrinthTest = new List<Rectangle>();
+
         public Form1()
         {
             InitializeComponent();
-            player[0] = new Rectangle(205, 505, 40, 40);
-            player[1] = new Rectangle(155, 555, 40, 40);
-            player[2] = new Rectangle(205, 555, 40, 40);
-            player[3] = new Rectangle(255, 555, 40, 40);
-
             for (int i = 0; i < 11; i++)
             {
                 for (int ii = 0; ii < 9; ii++)
@@ -78,6 +88,7 @@ namespace SKYFALL64
             rightClick = 0;
             upClick = 0;
             obstacleCount = 0;
+            numHold = 0;
             shots.Clear();
             playerScore = 0;
             for(int i = 0; i < squaresActive.Count(); i++)
@@ -86,7 +97,7 @@ namespace SKYFALL64
             }
             gameEngine.Enabled = true;
 
-            
+            labyrinthKey = "";
         }
 
         private void Form1_KeyDown(object sender, KeyEventArgs e)
@@ -94,16 +105,32 @@ namespace SKYFALL64
             switch (e.KeyCode)
             {
                 case Keys.Left:
-                    leftDown = true;
-                    leftClick++;
+                    if(gameState == "running" || gameState == "labyrinth")
+                    {
+                        leftDown = true;
+                        leftClick++;
+                    }
                     break;
                 case Keys.Right:
-                    rightDown = true;
-                    rightClick++;
+                    if (gameState == "running" || gameState == "labyrinth")
+                    {
+                        rightDown = true;
+                        rightClick++;
+                    }
                     break;
                 case Keys.Up:
-                    upDown = true;
-                    upClick++;
+                    if (gameState == "running" || gameState == "labyrinth")
+                    {
+                        upDown = true;
+                        upClick++;
+                    }
+                    break;
+                case Keys.Down:
+                    if (gameState == "running" || gameState == "labyrinth")
+                    {
+                        downDown = true;
+                        downClick++;
+                    }
                     break;
                 case Keys.Space:
                     if (gameState == "start" || gameState == "end")
@@ -135,6 +162,136 @@ namespace SKYFALL64
                         }
                     }
                     Refresh();
+                    break;
+                case Keys.L:
+                    if (gameState == "start" || gameState == "end")
+                    {
+                        if (labyrinthKey == "l")
+                        {
+
+                        }
+                        else
+                        {
+                            labyrinthKey = "l";
+                        }
+                    }
+                    break;
+                case Keys.A:
+                    if(labyrinthKey == "l")
+                    {
+                        labyrinthKey = "la";
+                    }
+                    else if(labyrinthKey == "la")
+                    {
+
+                    }
+                    else
+                    {
+                        labyrinthKey = "";
+                    }
+                    break;
+                case Keys.B:
+                    if (labyrinthKey == "la")
+                    {
+                        labyrinthKey = "lab";
+                    }
+                    else if (labyrinthKey == "lab")
+                    {
+
+                    }
+                    else
+                    {
+                        labyrinthKey = "";
+                    }
+                    break;
+                case Keys.Y:
+                    if (labyrinthKey == "lab")
+                    {
+                        labyrinthKey = "laby";
+                    }
+                    else if (labyrinthKey == "laby")
+                    {
+
+                    }
+                    else
+                    {
+                        labyrinthKey = "";
+                    }
+                    break;
+                case Keys.R:
+                    if (labyrinthKey == "laby")
+                    {
+                        labyrinthKey = "labyr";
+                    }
+                    else if (labyrinthKey == "labyr")
+                    {
+
+                    }
+                    else
+                    {
+                        labyrinthKey = "";
+                    }
+                    break;
+                case Keys.I:
+                    if (labyrinthKey == "labyr")
+                    {
+                        labyrinthKey = "labyri";
+                    }
+                    else if (labyrinthKey == "labyri")
+                    {
+
+                    }
+                    else
+                    {
+                        labyrinthKey = "";
+                    }
+                    break;
+                case Keys.N:
+                    if (labyrinthKey == "labyri")
+                    {
+                        labyrinthKey = "labyrin";
+                    }
+                    else if (labyrinthKey == "labyrin")
+                    {
+
+                    }
+                    else
+                    {
+                        labyrinthKey = "";
+                    }
+                    break;
+                case Keys.T:
+                    if (labyrinthKey == "labyrin")
+                    {
+                        labyrinthKey = "labyrint";
+                    }
+                    else if (labyrinthKey == "labyrint")
+                    {
+
+                    }
+                    else
+                    {
+                        labyrinthKey = "";
+                    }
+                    break;
+                case Keys.H:
+                    if (labyrinthKey == "labyrint")
+                    {
+                        labyrinthKey = "labyrinth";
+                        gameState = "labyrinth";
+                        LabyrinthStart();
+                    }
+                    else if (labyrinthKey == "labyrinth")
+                    {
+
+                    }
+                    else
+                    {
+                        labyrinthKey = "";
+                    }
+                    break;
+                default:
+                    labyrinthKey = "";
                     break;
             }
         }
@@ -289,10 +446,202 @@ namespace SKYFALL64
                     hit2.Play();
                     Refresh();
                     Thread.Sleep(1500);
-                    greenBrush = new SolidBrush(Color.Red);
+                    greenBrush = new SolidBrush(Color.Lime);
                     scoreLabel.ForeColor = Color.Lime;
                     gameState = "end";
                     gameEngine.Enabled = false;
+                }
+            }
+
+            Refresh();
+        }
+
+        public void LabyrinthStart()
+        {
+
+            labyrinthKey = "";
+            successfulLabyrinth = "false";
+            while (successfulLabyrinth == "false")
+            {
+                labyrinthTiles.Clear();
+                labyrinthBot.Clear();
+                switch (difficulty)
+                {
+                    case "EASY":
+                        grid = 12;
+                        labyrinthTilesSize = 60;
+                        LabyrinthMaker();
+                        break;
+                    case "MEDIUM":
+                        grid = 22;
+                        labyrinthTilesSize = 30;
+                        LabyrinthMaker();
+                        break;
+                    case "HARD":
+                        grid = 32;
+                        labyrinthTilesSize = 20;
+                        LabyrinthMaker();
+                        break;
+                }
+            }
+            ////labyrinth test visualized pt. 2
+            //for (int i = 0; i < grid; i++)
+            //{
+            //    for (int ii = 0; ii < grid; ii++)
+            //    {
+            //        labyrinthTest.Add(new Rectangle(ii * labyrinthTilesSize - labyrinthTilesSize, i * labyrinthTilesSize - labyrinthTilesSize, labyrinthTilesSize, labyrinthTilesSize));
+            //    }
+            //}
+            labyrinthPlayer = new Rectangle(0, 0, labyrinthTilesSize, labyrinthTilesSize);
+            labyrinthObjectiveBack = new Rectangle((grid - 3) * labyrinthTilesSize, (grid - 3) * labyrinthTilesSize, labyrinthTilesSize, labyrinthTilesSize);
+            labyrinthObjectiveFront = new Rectangle((grid - 3) * labyrinthTilesSize + 5, (grid - 3) * labyrinthTilesSize + 5, labyrinthTilesSize - 10, labyrinthTilesSize - 10);
+            gameState = "labyrinth";
+            labyrinthEngine.Enabled = true;
+        }
+
+        public void LabyrinthMaker()
+        {
+            for (int i = 0; i < grid * grid; i++)
+            {
+                labyrinthTiles.Add(randGen.Next(0, 2));
+            }
+            for (int i = 0; i < grid; i++)
+            {
+                labyrinthTiles[i] = 1;
+                labyrinthTiles[grid * grid - 1 - i] = 1;
+                labyrinthTiles[i * grid] = 1;
+                labyrinthTiles[i * grid + (grid - 1)] = 1;
+            }
+            labyrinthTiles[grid + 1] = 2;
+            labyrinthTiles[grid * grid - grid - 2] = 0;
+            labyrinthBot.Add(grid + 1);
+            for (int i = 0; i < labyrinthBot.Count; i++)
+            {
+                if (labyrinthTiles[labyrinthBot[i] + 1] == 0 && !labyrinthBot.Contains(labyrinthBot[i] + 1))
+                {
+                    labyrinthBot.Add(labyrinthBot[i] + 1);
+                }
+                if (labyrinthTiles[labyrinthBot[i] - 1] == 0 && !labyrinthBot.Contains(labyrinthBot[i] - 1))
+                {
+                    labyrinthBot.Add(labyrinthBot[i] - 1);
+                }
+                if (labyrinthTiles[labyrinthBot[i] + grid] == 0 && !labyrinthBot.Contains(labyrinthBot[i] + grid))
+                {
+                    labyrinthBot.Add(labyrinthBot[i] + grid);
+                }
+                if (labyrinthTiles[labyrinthBot[i] - grid] == 0 && !labyrinthBot.Contains(labyrinthBot[i] - grid))
+                {
+                    labyrinthBot.Add(labyrinthBot[i] - grid);
+                }
+            }
+            if (labyrinthBot.Contains(grid * grid - grid - 2) || labyrinthBot.Contains(grid * (grid - 1) - grid - 1))
+            {
+                successfulLabyrinth = "true";
+            }
+
+            //successfulLabyrinth = "true";
+        }
+
+        private void labyrinthEngine_Tick(object sender, EventArgs e)
+        {
+            //move player
+            if (upDown == true)
+            {
+                int i = 0;
+                while (upClick != 0)
+                {
+
+                    if (labyrinthTiles[i] == 2 && labyrinthTiles[i - grid] == 0)
+                    {
+                        labyrinthTiles[i] = 0;
+                        labyrinthTiles[i - grid] += 2;
+                        //move player rectangle
+                        labyrinthPlayer = new Rectangle(labyrinthPlayer.X, labyrinthPlayer.Y - labyrinthTilesSize, labyrinthTilesSize, labyrinthTilesSize);
+                        upClick = 0;
+                    }
+                    if (i == labyrinthTiles.Count - 1)
+                    {
+                        upClick = 0;
+                    }
+                    i++;
+                }
+
+            }
+            if (downDown == true)
+            {
+                int i = 0;
+                while(downClick != 0)
+                {
+                    
+                        if (labyrinthTiles[i] == 2 && labyrinthTiles[i + grid] == 0)
+                        {
+                            labyrinthTiles[i] = 0;
+                            labyrinthTiles[i + grid] += 2;
+                            //move player rectangle
+                            labyrinthPlayer = new Rectangle(labyrinthPlayer.X, labyrinthPlayer.Y + labyrinthTilesSize, labyrinthTilesSize, labyrinthTilesSize);
+                            downClick = 0;
+                        }
+                        if(i == labyrinthTiles.Count - 1)
+                        {
+                            downClick = 0;
+                        }
+                    i++;
+                }
+                
+            }
+            if (leftDown == true)
+            {
+                int i = 0;
+                while (leftClick != 0)
+                {
+
+                    if (labyrinthTiles[i] == 2 && labyrinthTiles[i - 1] == 0)
+                    {
+                        labyrinthTiles[i] = 0;
+                        labyrinthTiles[i - 1] += 2;
+                        //move player rectangle
+                        labyrinthPlayer = new Rectangle(labyrinthPlayer.X - labyrinthTilesSize, labyrinthPlayer.Y, labyrinthTilesSize, labyrinthTilesSize);
+                        leftClick = 0;
+                    }
+                    if (i == labyrinthTiles.Count - 1)
+                    {
+                        leftClick = 0;
+                    }
+                    i++;
+                }
+
+            }
+            if (rightDown == true)
+            {
+                int i = 0;
+                while (rightClick != 0)
+                {
+
+                    if (labyrinthTiles[i] == 2 && labyrinthTiles[i + 1] == 0)
+                    {
+                        labyrinthTiles[i] = 0;
+                        labyrinthTiles[i + 1] += 2;
+                        //move player rectangle
+                        labyrinthPlayer = new Rectangle(labyrinthPlayer.X + labyrinthTilesSize, labyrinthPlayer.Y, labyrinthTilesSize, labyrinthTilesSize);
+                        rightClick = 0;
+                    }
+                    if (i == labyrinthTiles.Count - 1)
+                    {
+                        rightClick = 0;
+                    }
+                    i++;
+                }
+
+            }
+
+            //check if player completed labyrinth
+            for(int i = 0; i < labyrinthTiles.Count; i++)
+            {
+                if(labyrinthTiles[grid * grid - grid - 2] == 2)
+                {
+                    gameState = "start";
+                    labyrinthEngine.Enabled = false;
+
                 }
             }
 
@@ -359,6 +708,35 @@ namespace SKYFALL64
                     subtitleLabel.Text = "Press space to play,\nd to change difficulty,\nor escape to exit.";
                     difficultyLabel.Text = $"Difficulty: {difficulty}";
                     scoreLabel.Text = "";
+                    break;
+                case "labyrinth":
+                    titleLabel.Text = "";
+                    subtitleLabel.Text = "";
+                    difficultyLabel.Text = "";
+                    scoreLabel.Text = "";
+
+                    ////labyrinth test visualized pt.3 a) BOT
+                    //for (int i = 0; i < labyrinthTiles.Count; i++)
+                    //{
+                    //    if (labyrinthBot.Contains(i))
+                    //    {
+                    //        e.Graphics.FillRectangle(greenBrush, labyrinthTest[i]);
+                    //    }
+                    //}
+                    ////labyrinth test visualized pt.3 b) WALLS
+                    //for (int i = 0; i < labyrinthTiles.Count; i++)
+                    //{
+                    //    if (labyrinthTiles[i] == 1)
+                    //    {
+                    //        e.Graphics.FillRectangle(greenBrush, labyrinthTest[i]);
+                    //    }
+                    //}
+
+                    //draw player and objective
+                    e.Graphics.FillRectangle(greenBrush, labyrinthPlayer);
+                    e.Graphics.FillRectangle(greenBrush, labyrinthObjectiveBack);
+                    e.Graphics.FillRectangle(blackBrush, labyrinthObjectiveFront);
+
                     break;
             }
         }

@@ -34,6 +34,7 @@
             this.subtitleLabel = new System.Windows.Forms.Label();
             this.difficultyLabel = new System.Windows.Forms.Label();
             this.scoreLabel = new System.Windows.Forms.Label();
+            this.labyrinthEngine = new System.Windows.Forms.Timer(this.components);
             this.SuspendLayout();
             // 
             // gameEngine
@@ -88,10 +89,15 @@
             this.scoreLabel.Text = "Score:\r\n0";
             this.scoreLabel.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
+            // labyrinthEngine
+            // 
+            this.labyrinthEngine.Interval = 20;
+            this.labyrinthEngine.Tick += new System.EventHandler(this.labyrinthEngine_Tick);
+            // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.BackColor = System.Drawing.Color.Black;
             this.ClientSize = new System.Drawing.Size(600, 600);
             this.Controls.Add(this.scoreLabel);
@@ -116,6 +122,7 @@
         private System.Windows.Forms.Label subtitleLabel;
         private System.Windows.Forms.Label difficultyLabel;
         private System.Windows.Forms.Label scoreLabel;
+        private System.Windows.Forms.Timer labyrinthEngine;
     }
 }
 
