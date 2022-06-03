@@ -377,11 +377,13 @@ namespace SKYFALL64
                     {
                         squaresActive[i + 9] = 1;
                         shots.Remove(shots[ii]);
+                        ii--;
                     }
                     else if (shots[ii].Y == 5 && shots[ii].X == squares[i].X)
                     {
                         squaresActive[i] = 1;
                         shots.Remove(shots[ii]);
+                        ii--;
                     }
                 }
             }
